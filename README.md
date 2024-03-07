@@ -1,3 +1,3 @@
 # CSV Largest Number
 
-Simple python script that gets the largest number from a CSV file.
+Simple Rust CLI application that gets the largest number from a CSV file.
