@@ -1,62 +1,41 @@
-use anyhow::{Context, Result};
-use csv::ReaderBuilder;
+use csv::Reader;
+use std::error::Error;
+use std::fs::File;
 use std::io::{self, Write};
 
-fn main() -> Result<()> {
-    let path = ask_for_csv_path()?;
-    match find_largest_number_in_csv(&path) {
-        Ok((max_value, location)) => {
-            println!(
-                "The largest number in the CSV is: {} at row {}, column {}",
-                max_value, location.0, location.1
-            );
-        }
-        Err(e) => {
-            println!("An error occurred: {}", e);
-        }
-    }
-    Ok(())
-}
+fn main() -> Result<(), Box<dyn Error>> {
+    let mut input_path = String::new();
+    println!("Enter the path to the CSV file:");
+    io::stdout().flush()?;
+    io::stdin().read_line(&mut input_path)?;
+    let input_path = input_path.trim();
 
-fn ask_for_csv_path() -> Result<String> {
-    print!("Please enter the path to the CSV file: ");
-    io::stdout().flush().context("Could not flush stdout")?;
-    let mut path = String::new();
-    io::stdin()
-        .read_line(&mut path)
-        .context("Failed to read line")?;
-    Ok(path.trim().to_string())
-}
+    let file = File::open(input_path)?;
+    let mut rdr = Reader::from_reader(file);
 
-fn find_largest_number_in_csv(path: &str) -> Result<(f64, (usize, usize))> {
-    let mut reader = ReaderBuilder::new()
-        .from_path(path)
-        .with_context(|| format!("Failed to read CSV file from path: {}", path))?;
+    let mut max_value = None;
+    let mut max_position = (0, 0);
 
-    let mut max_value = f64::MIN;
-    let mut location = (0, 0);
-
-    for (row_index, result) in reader.records().enumerate() {
-        let record =
-            result.with_context(|| format!("Failed to read record at row {}", row_index + 1))?;
+    for (row_index, result) in rdr.records().enumerate() {
+        let record = result?;
         for (col_index, field) in record.iter().enumerate() {
-            match field.parse::<f64>() {
-                Ok(value) => {
-                    if value > max_value {
-                        max_value = value;
-                        location = (row_index + 1, col_index + 1);
-                    }
-                }
-                Err(_) => {
-                    // Skip values that cannot be parsed as f64
-                }
+            let value: f64 = field.parse().unwrap_or(f64::MIN);
+            if max_value.is_none() || value > max_value.unwrap() {
+                max_value = Some(value);
+                max_position = (row_index, col_index);
             }
         }
     }
 
-    if max_value == f64::MIN {
-        Err(anyhow::anyhow!("No numeric values found in the CSV file."))
-    } else {
-        Ok((max_value, location))
+    match max_value {
+        Some(val) => println!(
+            "Largest number: {}, located at row: {}, column: {}",
+            val,
+            max_position.0 + 1,
+            max_position.1 + 1
+        ),
+        None => println!("Could not find a largest number in the file."),
     }
+
+    Ok(())
 }
