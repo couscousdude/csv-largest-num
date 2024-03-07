@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2021"
 repository = "https://github.com/couscousdude/csv-largest-num"
 authors = ["Youwen Wu <youwenw@protonmail.com>"]
+description = "A simple CLI application that gets the largest number from a CSV file."
+license = "MIT"
+readme = "README.md"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [package.metadata.wix]
 upgrade-guid = "DDA3618F-E2EE-4DA7-A4D3-6B438096B6DA"
