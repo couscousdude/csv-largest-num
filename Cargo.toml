@@ -15,8 +15,6 @@ path-guid = "7E2ECFFF-64E4-4235-870D-7CDA2B4DFA30"
 license = false
 eula = false
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 csv = "1.1"
 anyhow = "1.0"
