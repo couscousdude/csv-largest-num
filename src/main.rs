@@ -3,6 +3,8 @@ use std::error::Error;
 use std::fs::File;
 use std::io::{self, Write};
 
+// 100% ai generated
+
 fn main() -> Result<(), Box<dyn Error>> {
     let mut input_path = String::new();
     println!("Enter the path to the CSV file:");
