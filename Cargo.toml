@@ -2,9 +2,39 @@
 name = "csv-largest-num"
 version = "0.1.0"
 edition = "2021"
+repository = "https://github.com/couscousdude/csv-largest-num"
+authors = ["Youwen Wu <youwenw@protonmail.com>"]
+
+[package.metadata.wix]
+upgrade-guid = "DDA3618F-E2EE-4DA7-A4D3-6B438096B6DA"
+path-guid = "7E2ECFFF-64E4-4235-870D-7CDA2B4DFA30"
+license = false
+eula = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 csv = "1.1"
 anyhow = "1.0"
+
+# The profile that 'cargo dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
+
+# Config for 'cargo dist'
+[workspace.metadata.dist]
+# The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
+cargo-dist-version = "0.11.1"
+# CI backends to support
+ci = ["github"]
+# The installers to generate for each app
+installers = ["shell", "powershell", "npm", "msi"]
+# Target platforms to build apps for (Rust target-triple syntax)
+targets = ["aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
+# The archive format to use for windows builds (defaults .zip)
+windows-archive = ".tar.gz"
+# The archive format to use for non-windows builds (defaults .tar.xz)
+unix-archive = ".tar.gz"
+# Publish jobs to run in CI
+pr-run-mode = "plan"
